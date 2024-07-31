@@ -65,4 +65,4 @@ namespace WikiServer.Api.Controllers
         }
     }
 }
-/*~/ api / folders /{ folderId}/ [controller*  asd/
+/*~/ api / folders /{ folderId}/ [controller*/
