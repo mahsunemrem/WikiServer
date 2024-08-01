@@ -20,7 +20,7 @@ namespace WikiServer.Api.Controllers
             return Ok(file);
         }
 
-        [HttpGet("~/api/folders/{folderId}/[controller]")]
+        [HttpGet("GetByFolderId/{folderId}")]
         public IActionResult GetByFolderId(int folderId)
         {
             var files = FileData

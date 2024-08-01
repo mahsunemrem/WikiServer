@@ -10,26 +10,13 @@ namespace WikiServer.Api.Controllers
     public class CommentsController : ControllerBase
     {
         [HttpGet]
-        public IActionResult ListComment()
-        {
-            var values = CommentData.List.ToArray();
-            return Ok(values);
-            //   return Ok(CommentData.List);
-        }
-
+        public IActionResult ListComment() => Ok(CommentData.List);
 
         [HttpPost]
-        public IActionResult AddComment()
+        public IActionResult AddComment(CommentDTO comment)
         {
-            var comment = new CommentDTO
-            {
-                AuthorName = "Deneme",
-                Content = "deneme2",
-                CreateDate = DateTime.Now,
-                FileId = 2,
-                Id = 3
-            };
             CommentData.List.Add(comment);
+
             return Ok(comment);
         }
 
@@ -55,7 +42,7 @@ namespace WikiServer.Api.Controllers
             CommentData.List.Remove(comment);
             return Ok();
         }
-        [HttpGet("~/api/files/{fileId}/comments")]
+        [HttpGet("~/api/files/{fileId}/[controller]")]
         public IActionResult GetCommentsByFileId(int fileId)
         {
             var comments = CommentData.List
