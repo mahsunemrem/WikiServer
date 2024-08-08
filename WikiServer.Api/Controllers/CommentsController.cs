@@ -15,6 +15,9 @@ namespace WikiServer.Api.Controllers
         [HttpPost]
         public IActionResult AddComment(CommentDTO comment)
         {
+          
+            comment.Id = CommentData.List.Count > 0 ? CommentData.List.Max(c => c.Id) + 1 : 1;
+
             CommentData.List.Add(comment);
 
             return Ok(comment);
@@ -52,4 +55,3 @@ namespace WikiServer.Api.Controllers
         }
     }
 }
-/*~/ api / folders /{ folderId}/ [controller*/
