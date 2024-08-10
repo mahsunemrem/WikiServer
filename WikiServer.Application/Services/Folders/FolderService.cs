@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using WikiServer.Application.Interfaces.Folders;
 using WikiServer.Domain.AggregateModels.FolderModels;
+
 namespace WikiServer.Application.Services.Folders
 {
     public class FolderService : IFolderService<Folder>
