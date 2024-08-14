@@ -54,7 +54,7 @@ namespace WikiServer.Api.Controllers
         {
             return Ok(FileData.List.ToList());
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult FileDelete(int id)
         {
             var values = FileData.List.FirstOrDefault(x=> x.Id == id);
