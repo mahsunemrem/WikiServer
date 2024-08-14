@@ -32,7 +32,7 @@ namespace WikiServer.Api.Controllers
             }
             return Ok(comment);
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult DeleteComment(int id)
         {
             var comment = CommentData.List.FirstOrDefault(x => x.Id == id);
