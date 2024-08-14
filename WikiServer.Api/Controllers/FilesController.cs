@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Xml.Linq;
 using WikiServer.Api.Helpers;
 using WikiServer.Api.Models;
 
@@ -8,6 +9,7 @@ namespace WikiServer.Api.Controllers
     [Route("api/[controller]")]
     public class FilesController : Controller
     {
+
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
@@ -33,6 +35,50 @@ namespace WikiServer.Api.Controllers
                 });
 
             return Ok(files);
+        }
+
+        [HttpPost]
+        public IActionResult AddFile(FileDTO file)
+        {
+            file.Id = FileData.List.Count > 0 ? FileData.List.Max(c => c.Id) + 1 : 1;
+            if (file.FolderId == 0 || file.FolderId == null)
+            {
+                return BadRequest();
+            }
+            FileData.List.Add(file);
+            return Ok();
+        }
+
+        [HttpGet]
+        public IActionResult FileList()
+        {
+            return Ok(FileData.List.ToList());
+        }
+        [HttpDelete]
+        public IActionResult FileDelete(int id)
+        {
+            var values = FileData.List.FirstOrDefault(x=> x.Id == id);
+            
+            return Ok(FileData.List.Remove(values));
+        }
+        [HttpPut("{id}")]
+        public IActionResult UpdateFile(int id, FileDTO updatedFile)
+        {
+           
+            var existingFile = FileData.List.FirstOrDefault(x => x.Id == id);
+            if (existingFile == null)
+            {
+                return NotFound();
+            }
+
+
+            existingFile.Name = updatedFile.Name;
+            existingFile.FolderId = updatedFile.FolderId;
+            existingFile.Content = updatedFile.Content;
+
+    
+
+            return Ok(existingFile);
         }
     }
 }
