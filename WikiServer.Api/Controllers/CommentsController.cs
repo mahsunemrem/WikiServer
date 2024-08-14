@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Xml.Linq;
 using WikiServer.Api.Helpers;
 using WikiServer.Api.Models;
 
@@ -15,12 +14,12 @@ namespace WikiServer.Api.Controllers
         [HttpPost]
         public IActionResult AddComment(CommentDTO comment)
         {
-          
+
             comment.Id = CommentData.List.Count > 0 ? CommentData.List.Max(c => c.Id) + 1 : 1;
 
             CommentData.List.Add(comment);
 
-            return Ok(comment);
+            return Ok();
         }
 
         [HttpGet("{id}")]
