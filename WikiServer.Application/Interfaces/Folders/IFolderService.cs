@@ -1,6 +1,10 @@
-﻿namespace WikiServer.Application.Interfaces.Folders
+﻿using WikiServer.Application.Dtos.FolderDTO;
+using WikiServer.Domain.AggregateModels.FolderModels;
+
+namespace WikiServer.Application.Interfaces.Folders
 {
-    public interface IFolderService<T> : IBusinessService<T> where T : class
+    public interface IFolderService : IBusinessService<Folder> 
     {
+        void AddOrUpdate(FolderDTO folder);
     }
 }

@@ -1,3 +1,11 @@
+using Microsoft.EntityFrameworkCore;
+using WikiServer.Application.Interfaces.Folders;
+using WikiServer.Application.Services.Folders;
+using WikiServer.Domain.AggregateModels.FolderModels;
+using WikiServer.Infrastructure.Database;
+using WikiServer.Infrastructure.Interfaces;
+using WikiServer.Infrastructure.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
@@ -13,6 +21,11 @@ builder.Services.AddCors(options =>
 
 // Add services to the container.
 
+builder.Services.AddScoped<IFolderService,FolderService>();
+builder.Services.AddScoped(typeof(IEFRepository<>),typeof(BaseRepository<>));
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),b=>b.MigrationsAssembly("WikiServer.Api")));
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

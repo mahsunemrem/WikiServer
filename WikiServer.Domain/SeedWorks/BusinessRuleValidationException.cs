@@ -1,7 +1,10 @@
 ﻿namespace WikiServer.Domain.SeedWorks
 {
-    internal class BusinessRuleValidationException : Exception
+    public class BusinessRuleValidationException : Exception
     {
-
+        public BusinessRuleValidationException(string message):base(message)
+        {
+            
+        }
     }
 }
