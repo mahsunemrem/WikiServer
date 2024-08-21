@@ -1,9 +1,7 @@
 ﻿using System.Linq.Expressions;
-using WikiServer.Application.Dtos.FolderDTO;
-using WikiServer.Application.Interfaces;
 using WikiServer.Application.Interfaces.Folders;
 using WikiServer.Domain.AggregateModels.FolderModels;
-using WikiServer.Infrastructure.Interfaces;
+using WikiServer.Domain.SeedWorks;
 
 
 namespace WikiServer.Application.Services.Folders
@@ -11,52 +9,29 @@ namespace WikiServer.Application.Services.Folders
     public class FolderService : IFolderService
     {
 
-        private IEFRepository<Folder> _folderRepository;
+        private IUnitOfWork _unitOfWork;
 
-        public FolderService(IEFRepository<Folder> folderService)
+        public FolderService(IUnitOfWork unitOfWork)
         {
-            _folderRepository = folderService;
+            _unitOfWork = unitOfWork;
         }
 
-        public void AddOrUpdate(FolderDTO folderDto)
+        public async Task AddOrUpdateAsync(Folder entity)
         {
-            if (folderDto == null)
-            {
-                throw new ArgumentNullException(nameof(folderDto));
-            }
+            var repo = _unitOfWork.Repository<Folder>();
 
-            
-            var folder = new Folder(folderDto.ParentId, folderDto.Name, folderDto.Description);
-
-            
-            if (folder.Id == 0)
-            {
-                _folderRepository.Insert(folder);
-            }
-            else
-            {
-                _folderRepository.Update(folder);
-            }
-        }
-
-
-        public void AddOrUpdate(Folder entity)
-        {
             if (entity.Id == 0)
             {
-                
-                _folderRepository.Insert(entity);
+
+                repo.Insert(entity);
             }
             else
             {
-                
-                _folderRepository.Update(entity);
-            }
-        }
 
-        public void Delete(params object[] id)
-        {
-            throw new NotImplementedException();
+                repo.Update(entity);
+            }
+
+            await _unitOfWork.SaveAsync();
         }
 
         public void Delete(Folder entity)
@@ -64,17 +39,22 @@ namespace WikiServer.Application.Services.Folders
             throw new NotImplementedException();
         }
 
-        public void Dispose()
-        {
-            _folderRepository.Dispose();
-        }
-
-        public IEnumerable<Folder> Find(Expression<Func<Folder, bool>> predicate, bool noTracking = true)
+        public Task DeleteAsync(params object[] id)
         {
             throw new NotImplementedException();
         }
 
-        public Folder GetById(params object[] id)
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Folder>> FindAsync(Expression<Func<Folder, bool>> predicate, bool noTracking = true)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Folder> GetByIdAsync(params object[] id)
         {
             throw new NotImplementedException();
         }

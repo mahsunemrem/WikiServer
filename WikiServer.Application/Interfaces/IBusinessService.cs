@@ -21,7 +21,7 @@ namespace WikiServer.Application.Interfaces
         /// </code>
         /// Bu örnekte, belirtilen ID değerine sahip kullanıcı veritabanından alınır.
         /// </remarks>
-        T GetById(params object[] id);
+        Task<T> GetByIdAsync(params object[] id);
 
         /// <summary>
         /// Belirtilen entity'i veritabanına ekler veya varsa günceller.
@@ -37,7 +37,7 @@ namespace WikiServer.Application.Interfaces
         /// </code>
         /// Bu örnekte, <c>IdentityUser</c> tipindeki bir kullanıcı eklenir veya güncellenir.
         /// </remarks>
-        void AddOrUpdate(T entity);
+        Task AddOrUpdateAsync(T entity);
 
         /// <summary>
         /// Verilen ID değerlerine karşılık gelen entity'i veritabanından siler.
@@ -46,7 +46,7 @@ namespace WikiServer.Application.Interfaces
         /// <remarks>
         /// Birden fazla ID parametresi verilebilir, bu durumda karşılık gelen tüm entity'ler silinir.
         /// </remarks>
-        void Delete(params object[] id);
+        Task DeleteAsync(params object[] id);
 
         /// <summary>
         /// Verilen entity'i veritabanından siler.
@@ -82,6 +82,6 @@ namespace WikiServer.Application.Interfaces
         /// </code>
         /// Bu örnekte, aktif kullanıcılar no-tracking ile bulunur ve bir koleksiyon olarak döndürülür.
         /// </remarks>
-        IEnumerable<T> Find(Expression<Func<T, bool>> predicate, bool noTracking = true);
+        Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, bool noTracking = true);
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using WikiServer.Infrastructure.Database;
 using WikiServer.Infrastructure.Interfaces;
 
@@ -7,7 +6,7 @@ namespace WikiServer.Infrastructure.Repositories
 {
     public class BaseRepository<T> : IEFRepository<T> where T : class
     {
-     
+
         private readonly ApplicationDbContext _context;
 
         public BaseRepository(ApplicationDbContext context)
@@ -32,7 +31,6 @@ namespace WikiServer.Infrastructure.Repositories
         public void Delete(T entity)
         {
             _context.Remove(entity);
-            _context.SaveChanges();
         }
 
         public void Dispose()
@@ -45,21 +43,16 @@ namespace WikiServer.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public T GetById(params object[] id)
-        {
-            return _context.Set<T>().Find(id);  
-        }
+        public T GetById(params object[] id) => _context.Set<T>().Find(id);
 
         public void Insert(T entity)
         {
             _context.Add(entity);
-            _context.SaveChanges();
         }
 
         public void Update(T entity)
         {
             _context.Update(entity);
-            _context.SaveChanges();
         }
     }
 }

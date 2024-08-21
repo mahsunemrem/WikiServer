@@ -8,8 +8,8 @@ namespace WikiServer.Api.Mapping.AutoMapperProfile
     {
         public MapProfile()
         {
-            CreateMap<Folder,FolderDTO>();
-            CreateMap<FolderDTO,Folder>();
+            CreateMap<Folder, FolderDTO>();
+            CreateMap<FolderDTO, Folder>();
         }
     }
 }

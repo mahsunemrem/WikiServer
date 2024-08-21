@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WikiServer.Api.Models;
+using WikiServer.Api.ModelServices.Interfaces;
 using WikiServer.Application.Dtos.FolderDTO;
-using WikiServer.Application.Interfaces.Folders;
-using WikiServer.Domain.AggregateModels.FolderModels;
-using WikiServer.Domain.SeedWorks;
 using WikiServer.Infrastructure.Domain;
 
 namespace WikiServer.Api.Controllers
@@ -12,23 +9,23 @@ namespace WikiServer.Api.Controllers
     [Route("api/[controller]")]
     public class FoldersController : Controller
     {
-        private readonly IFolderService _folderService;
+        private readonly IFolderModelService _modelService;
 
-        public FoldersController(IFolderService folderService)
+        public FoldersController(IFolderModelService modelService)
         {
-            _folderService = folderService;
+            _modelService = modelService;
         }
         [HttpPost]
         public IActionResult CreateFolder([FromBody] FolderDTO folderDTO)
         {
-       
+
             try
             {
-                _folderService.AddOrUpdate(folderDTO);
+                _modelService.AddOrUpdate(folderDTO);
                 var successResult = Result.SuccessResult("Klasör başarılı bir şekilde oluşturuldu.");
                 return Ok(successResult);
             }
-         
+
             catch (Exception ex)
             {
                 var errorResult = Result.FailureResult("Klasör oluşturulamadı.", new List<string> { ex.Message });
