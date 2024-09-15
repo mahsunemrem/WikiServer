@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using WikiServer.Application.Interfaces;
 using WikiServer.Application.Interfaces.Folders;
 using WikiServer.Domain.AggregateModels.FolderModels;
 using WikiServer.Domain.SeedWorks;
@@ -16,20 +17,17 @@ namespace WikiServer.Application.Services.Folders
             _unitOfWork = unitOfWork;
         }
 
-        public async Task AddOrUpdateAsync(Folder entity)
+        public async Task AddAsync(Folder entity)
         {
             var repo = _unitOfWork.Repository<Folder>();
 
-            if (entity.Id == 0)
-            {
+           
 
                 repo.Insert(entity);
-            }
-            else
-            {
+          
 
-                repo.Update(entity);
-            }
+     
+    
 
             await _unitOfWork.SaveAsync();
         }
@@ -44,9 +42,14 @@ namespace WikiServer.Application.Services.Folders
             throw new NotImplementedException();
         }
 
-        public void Dispose()
+        public Task DeleteAsync(Folder entity)
         {
             throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+           _unitOfWork.Dispose();
         }
 
         public Task<IEnumerable<Folder>> FindAsync(Expression<Func<Folder, bool>> predicate, bool noTracking = true)
@@ -54,7 +57,28 @@ namespace WikiServer.Application.Services.Folders
             throw new NotImplementedException();
         }
 
-        public Task<Folder> GetByIdAsync(params object[] id)
+        public Task<Folder> FirstOrDefault(Expression<Func<Folder, bool>> where, bool noTracking = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<Folder>> GetAll()
+        {
+            var repo = _unitOfWork.Repository<Folder>();
+         
+            var folders = repo.GetAll; 
+
+            return await Task.FromResult(folders);
+        }
+
+        public async Task<Folder> GetByIdAsync(params object[] id)
+        {
+            var repo = _unitOfWork.Repository<Folder>();
+            var folders = await repo.GetById(id);
+            return folders;
+        }
+
+        public Task Update(Folder entity)
         {
             throw new NotImplementedException();
         }

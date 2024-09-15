@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WikiServer.Api.ModelServices;
 using WikiServer.Api.ModelServices.Interfaces;
 using WikiServer.Application.Dtos.FolderDTO;
 using WikiServer.Infrastructure.Domain;
@@ -15,13 +16,13 @@ namespace WikiServer.Api.Controllers
         {
             _modelService = modelService;
         }
-        [HttpPost]
-        public IActionResult CreateFolder([FromBody] FolderDTO folderDTO)
+        [HttpPost("CreateFolder")]
+        public async Task<IActionResult> CreateFolder([FromBody] FolderDTO folderDTO)
         {
 
             try
             {
-                _modelService.AddOrUpdate(folderDTO);
+                await _modelService.AddAsync(folderDTO);
                 var successResult = Result.SuccessResult("Klasör başarılı bir şekilde oluşturuldu.");
                 return Ok(successResult);
             }
@@ -40,7 +41,11 @@ namespace WikiServer.Api.Controllers
             return Ok(result);
         }
 
-        //    return Ok(file);
-        //}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var result = await _modelService.GetById(id);
+            return Ok(result);
+        }
     }
 }

@@ -37,8 +37,8 @@ namespace WikiServer.Application.Interfaces
         /// </code>
         /// Bu örnekte, <c>IdentityUser</c> tipindeki bir kullanıcı eklenir veya güncellenir.
         /// </remarks>
-        Task AddOrUpdateAsync(T entity);
-
+        Task AddAsync(T entity);
+        Task Update(T entity);
         /// <summary>
         /// Verilen ID değerlerine karşılık gelen entity'i veritabanından siler.
         /// </summary>
@@ -46,7 +46,8 @@ namespace WikiServer.Application.Interfaces
         /// <remarks>
         /// Birden fazla ID parametresi verilebilir, bu durumda karşılık gelen tüm entity'ler silinir.
         /// </remarks>
-        Task DeleteAsync(params object[] id);
+       // Task DeleteAsync(params object[] id);
+        Task DeleteAsync(T entity);
 
         /// <summary>
         /// Verilen entity'i veritabanından siler.
@@ -61,7 +62,7 @@ namespace WikiServer.Application.Interfaces
         /// </code>
         /// Bu örnekte, veritabanından bir <c>IdentityUser</c> tipindeki kullanıcı silinir.
         /// </remarks>
-        void Delete(T entity);
+       // void Delete(T entity);
 
         /// <summary>
         /// Belirtilen koşula göre entity'leri bulur ve döndürür.
@@ -83,5 +84,10 @@ namespace WikiServer.Application.Interfaces
         /// Bu örnekte, aktif kullanıcılar no-tracking ile bulunur ve bir koleksiyon olarak döndürülür.
         /// </remarks>
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, bool noTracking = true);
+
+        Task<IEnumerable<T>> GetAll();
+
+        Task<T> FirstOrDefault(Expression<Func<T, bool>> where, bool noTracking = false);
+
     }
 }

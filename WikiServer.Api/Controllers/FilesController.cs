@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Xml.Linq;
-using WikiServer.Api.Models;
+using WikiServer.Api.ModelServices;
+using WikiServer.Api.ModelServices.Interfaces;
+using WikiServer.Application.Dtos.FileDTO;
 
 namespace WikiServer.Api.Controllers
 {
@@ -8,76 +10,84 @@ namespace WikiServer.Api.Controllers
     [Route("api/[controller]")]
     public class FilesController : Controller
     {
+        private readonly IFileModelService _fileModelService;
 
-        //[HttpGet("{id}")]
-        //public IActionResult Get(int id)
-        //{
-        //    var file = FileData.List.FirstOrDefault(x => x.Id == id);
-        //    if (file == null)
-        //    {
-        //        return BadRequest();
-        //    }
+        public FilesController(IFileModelService fileModelService)
+        {
+            _fileModelService = fileModelService;
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var file = await _fileModelService.GetById(id);
+            if (file == null)
+            {
+                return BadRequest();
+            }
 
-        //    return Ok(file);
-        //}
+            return Ok(file);
+        }
 
-        //[HttpGet("~/api/folders/{folderId}/[controller]")]
-        //public IActionResult GetByFolderId(int folderId)
-        //{
-        //    var files = FileData
-        //        .List
-        //        .Where(x => x.FolderId == folderId)
-        //        .Select(x => new FileBasicDTO
-        //        {
-        //            Id = x.Id,
-        //            Name = x.Name,
-        //        });
+        [HttpGet("~/api/folders/{folderId}/[controller]")]
+        public async Task<IActionResult> GetByFolderId(int folderId)
+        {
+            var files = await _fileModelService.GetByFolderId(folderId);
 
-        //    return Ok(files);
-        //}
+            return Ok(files);
+        }
 
-        //[HttpPost]
-        //public IActionResult AddFile(FileDTO file)
-        //{
-        //    file.Id = FileData.List.Count > 0 ? FileData.List.Max(c => c.Id) + 1 : 1;
-        //    if (file.FolderId == 0 || file.FolderId == null)
-        //    {
-        //        return BadRequest();
-        //    }
-        //    FileData.List.Add(file);
-        //    return Ok();
-        //}
 
-        //[HttpGet]
-        //public IActionResult FileList()
-        //{
-        //    return Ok(FileData.List.ToList());
-        //}
-        //[HttpDelete("{id}")]
-        //public IActionResult FileDelete(int id)
-        //{
-        //    var values = FileData.List.FirstOrDefault(x=> x.Id == id);
+        [HttpPost]
+        public async Task<IActionResult> AddFile(FileDTO file)
+        {
+
+            await _fileModelService.AddAsync(file);
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> FileDelete(int id)
+        {
+            var file = await _fileModelService.GetById(id);
+            if (file == null)
+            {
+                return NotFound(new { Message = "Dosya bulunamadı" });
+            }
+
+            await _fileModelService.Delete(id);
+            return Ok(new { Message = "Dosya başarıyla silindi" });
+        }
+        [HttpPut]
+        public async Task<IActionResult> UpdateFile(FileDTO updatedFile)
+        {
+ 
+            var existingFile = await _fileModelService.GetById(updatedFile.Id);
+
+            if (existingFile == null)
+            {
+                return NotFound(new { Message = "Güncellenecek dosya bulunamadı." });
+            }
             
-        //    return Ok(FileData.List.Remove(values));
-        //}
-        //[HttpPut("{id}")]
-        //public IActionResult UpdateFile(int id, FileDTO updatedFile)
-        //{
-           
-        //    var existingFile = FileData.List.FirstOrDefault(x => x.Id == id);
-        //    if (existingFile == null)
-        //    {
-        //        return NotFound();
-        //    }
+          await   _fileModelService.Update(updatedFile);
 
+            return Ok(new { Message = "Dosya başarıyla güncellendi." });
+        }
+        [HttpPut("pin/{id}")]
+        public async Task<IActionResult> PinFile(int id, [FromBody] bool isPinned)
+        {
+            var file = await _fileModelService.GetById(id);
+            if (file == null)
+            {
+                return NotFound(new { Message = "Dosya bulunamadı." });
+            }
 
-        //    existingFile.Name = updatedFile.Name;
-        //    existingFile.FolderId = updatedFile.FolderId;
-        //    existingFile.Content = updatedFile.Content;
+            file.IsPinned = true;
+            await _fileModelService.Update(file);
 
-    
+            return Ok(new { Message = isPinned ? "Dosya sabitlendi." : "Sabitlenme kaldırıldı." });
+        }
 
-        //    return Ok(existingFile);
-        //}
     }
+
 }
+

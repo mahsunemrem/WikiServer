@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using WikiServer.Infrastructure.Database;
 using WikiServer.Infrastructure.Interfaces;
 
@@ -13,8 +14,10 @@ namespace WikiServer.Infrastructure.Repositories
         {
             _context = context;
         }
+        public DbSet<T> Entity => _context.Set<T>();
+        public IEnumerable<T> GetAll => _context.Set<T>().ToList();
 
-        public IEnumerable<T> GetAll => throw new NotImplementedException();
+        public IQueryable<T> GetAllNoTracking => _context.Set<T>().AsNoTracking();
 
         //protected virtual DbSet<T> DbSet => _dbSet ?? (_dbSet = _context.Set<T>());
 
@@ -23,14 +26,27 @@ namespace WikiServer.Infrastructure.Repositories
             return true;
         }
 
-        public void Delete(params object[] id)
-        {
-            throw new NotImplementedException();
-        }
+        //public async Task Delete(params object[] id)
+        //{
+        //    var entity = await _context.Set<T>().FindAsync(id);
+        //    if (entity == null)
+        //    {
+        //        throw new KeyNotFoundException("Entity not found.");
+        //    }
 
-        public void Delete(T entity)
+        //    if (_context.Entry(entity).State == EntityState.Detached)
+        //    {
+        //        _context.Set<T>().Attach(entity);
+        //    }
+
+        //    _context.Set<T>().Remove(entity);
+        //    await _context.SaveChangesAsync();
+        //}
+
+        public async Task Delete(T entity)
         {
-            _context.Remove(entity);
+          // _context.Set<T>().Remove(entity); aşağıdaki farklı kullanım tarzı
+            Entity.Remove(entity);
         }
 
         public void Dispose()
@@ -38,21 +54,24 @@ namespace WikiServer.Infrastructure.Repositories
             _context.Dispose();
         }
 
-        public T FirstOrDefault(Expression<Func<T, bool>> where, bool noTracking = false)
+        public async Task<T> FirstOrDefault(Expression<Func<T, bool>> where, bool noTracking = false)
         {
-            throw new NotImplementedException();
+            return await _context.Set<T>().FirstOrDefaultAsync(where);
         }
 
-        public T GetById(params object[] id) => _context.Set<T>().Find(id);
+        public async Task<T> GetById(params object[] id) => await _context.Set<T>().FindAsync(id);
 
-        public void Insert(T entity)
+        public async Task Insert(T entity)
         {
-            _context.Add(entity);
+            await Entity.AddAsync(entity);
         }
 
         public void Update(T entity)
         {
-            _context.Update(entity);
+            _context.Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
         }
+
+
     }
 }

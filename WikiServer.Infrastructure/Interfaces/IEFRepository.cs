@@ -7,6 +7,6 @@ namespace WikiServer.Infrastructure.Interfaces
     {
         bool Any(Expression<Func<T, bool>> predicate);
 
-        T FirstOrDefault(Expression<Func<T, bool>> where, bool noTracking = false);
+       Task<T> FirstOrDefault(Expression<Func<T, bool>> where, bool noTracking = false);
     }
 }

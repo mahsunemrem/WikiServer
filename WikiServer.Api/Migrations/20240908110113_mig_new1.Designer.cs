@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WikiServer.Infrastructure.Database;
 
@@ -11,9 +12,11 @@ using WikiServer.Infrastructure.Database;
 namespace WikiServer.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240908110113_mig_new1")]
+    partial class mig_new1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,9 +72,6 @@ namespace WikiServer.Api.Migrations
 
                     b.Property<int>("FolderID")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsPinned")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()

@@ -7,18 +7,20 @@
         /// </summary>
         IEnumerable<T> GetAll { get; }
 
+        IQueryable<T> GetAllNoTracking { get; }
+
         /// <summary>
         /// Get entity by identifier
         /// </summary>
         /// <param name="id">Identifier</param>
         /// <returns>Entity</returns>
-        T GetById(params object[] id);
+        Task<T> GetById(params object[] id);
 
         /// <summary>
         /// Insert entity
         /// </summary>
         /// <param name="entity">Entity</param>
-        void Insert(T entity);
+        Task Insert(T entity);
 
         /// <summary>
         /// Update entity
@@ -31,12 +33,12 @@
         /// Delete entity by Id
         /// </summary>        
         /// <param name="id">Id or Ids (if table has composite primary key)</param>
-        void Delete(params object[] id);
+     //   Task Delete(params object[] id);
 
         /// <summary>
         /// Delete entity 
         /// </summary>
         /// <param name="entity">Entity</param>
-        void Delete(T entity);
+        Task Delete(T entity);
     }
 }

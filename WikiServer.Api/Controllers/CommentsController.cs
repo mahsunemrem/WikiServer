@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WikiServer.Api.Models;
+using System.Collections.Generic;
+using WikiServer.Api.ModelServices;
+using WikiServer.Api.ModelServices.Interfaces;
+using WikiServer.Application.Dtos.CommentDTO;
+using WikiServer.Domain.AggregateModels.FolderModels;
 
 namespace WikiServer.Api.Controllers
 {
@@ -7,49 +11,73 @@ namespace WikiServer.Api.Controllers
     [ApiController]
     public class CommentsController : ControllerBase
     {
-        //[HttpGet]
-        //public IActionResult ListComment() => Ok(CommentData.List);
+        private readonly ICommentModelService _commentModelService;
 
-        //[HttpPost]
-        //public IActionResult AddComment(CommentDTO comment)
-        //{
+        public CommentsController(ICommentModelService commentModelService)
+        {
+            _commentModelService = commentModelService;
+        }
 
-        //    comment.Id = CommentData.List.Count > 0 ? CommentData.List.Max(c => c.Id) + 1 : 1;
+        [HttpGet]
+        public async Task<IActionResult> ListComment()
+        {
+            var result = await _commentModelService.GetAll();
+            return Ok(result);
+        }
 
-        //    CommentData.List.Add(comment);
+        [HttpPost]
+        public async Task<IActionResult> AddComment(CommentDTO comment)
+        {
+            await _commentModelService.AddAsync(comment);
+            return Ok();
+        }
 
-        //    return Ok();
-        //}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCommentUserById(int id)
+        {
+            var comment = await _commentModelService.GetAll();
+            var commentUserId = comment.Where(c => c.Id == id).FirstOrDefault();
 
-        //[HttpGet("{id}")]
-        //public IActionResult GetCommentUserById(int id)
-        //{
-        //    var comment = CommentData.List.FirstOrDefault(x => x.Id == id);
-        //    if (comment == null)
-        //    {
-        //        return BadRequest();
-        //    }
-        //    return Ok(comment);
-        //}
-        //[HttpDelete("{id}")]
-        //public IActionResult DeleteComment(int id)
-        //{
-        //    var comment = CommentData.List.FirstOrDefault(x => x.Id == id);
-        //    if (comment == null)
-        //    {
-        //        return NotFound();
-        //    }
+            return Ok(commentUserId);
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteComment(int id)
+        {
+            await _commentModelService.Delete(id);
+            return Ok();
+        }
+        [HttpGet("~/api/files/{fileId}/[controller]")]
+        public async Task<IActionResult> GetLimitedCommentsByFileId(int fileId, int limit = 3, int offset = 0)
+        {
+            var values = await _commentModelService.GetAll();
+            var commentByFile = values.Where(c => c.FileId == fileId)
+            .Skip(offset).Take(limit);
 
-        //    CommentData.List.Remove(comment);
-        //    return Ok();
-        //}
-        //[HttpGet("~/api/files/{fileId}/[controller]")]
-        //public IActionResult GetCommentsByFileId(int fileId)
-        //{
-        //    var comments = CommentData.List
-        //        .Where(c => c.FileId == fileId)
-        //        .ToArray();
-        //    return Ok(comments);
-        //}
+            return Ok(commentByFile);
+        }
+        [HttpGet("count/{fileId}")]
+        public async Task<IActionResult> GetTotalCommentsCount(int fileId)
+        {
+            var values = await _commentModelService.GetAll();
+            var commentByFile = values.Where(c => c.FileId == fileId).Count();
+            return Ok(commentByFile);
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCommentReactions(int id, [FromBody] string reactions)
+        {
+            var comment = await _commentModelService.GetById(id);
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            //   comment.Reactions = string.Join(",", reactions); // Reactions'ı string olarak saklıyoruz
+            comment.Reactions = reactions; 
+
+            await _commentModelService.AddAsync(comment);
+
+            return Ok();
+        }
+
     }
 }

@@ -8,7 +8,20 @@ namespace WikiServer.Infrastructure.Domain.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<File> builder)
         {
-            throw new NotImplementedException();
+            builder.ToTable("Files");
+
+            builder.HasKey(x => x.Id);
+
+            builder.Property(x => x.Name)
+                .HasMaxLength(100) 
+                .IsRequired();
+
+            builder.Property(x => x.Content)
+                .IsRequired();
+
+            builder.HasOne(x => x.Folder)
+                .WithMany() 
+                .HasForeignKey(x => x.FolderID);
         }
     }
 }

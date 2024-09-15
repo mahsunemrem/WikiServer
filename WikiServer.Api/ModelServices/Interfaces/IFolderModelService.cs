@@ -4,6 +4,8 @@ namespace WikiServer.Api.ModelServices.Interfaces
 {
     public interface IFolderModelService
     {
-        void AddOrUpdate(FolderDTO folderDTO);
+        Task AddAsync(FolderDTO folderDTO);
+        Task<IEnumerable<FolderDTO>> GetAllFolder();
+        Task<FolderDTO> GetById(int id);
     }
 }
