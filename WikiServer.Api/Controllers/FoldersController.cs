@@ -33,20 +33,12 @@ namespace WikiServer.Api.Controllers
             }
 
         }
-        //[HttpGet]
-        //public IActionResult Get()
-        //{
-        //    return Ok(FolderData.List);
-        //}
-
-        //[HttpGet("{id}")]
-        //public IActionResult Get(int id)
-        //{
-        //    var file = FolderData.List.FirstOrDefault(x => x.Id == id);
-        //    if (file == null)
-        //    {
-        //        return BadRequest();
-        //    }
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var result = await _modelService.GetAllFolder();
+            return Ok(result);
+        }
 
         //    return Ok(file);
         //}
